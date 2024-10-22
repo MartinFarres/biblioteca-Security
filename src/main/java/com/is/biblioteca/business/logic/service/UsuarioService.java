@@ -71,7 +71,6 @@ public class UsuarioService {
         validar(nombre, email, clave, confirmacion);
         
         Usuario usuario = new Usuario();
-        usuario.setId(UUID.randomUUID().toString());
         usuario.setNombre(nombre);
         usuario.setEmail(email);
         usuario.setRol(Rol.USER);
