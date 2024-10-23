@@ -30,8 +30,8 @@ public class SeguridadConfig  {
         .disable())
       .authorizeHttpRequests(authRequest -> 
         authRequest
-          .requestMatchers("/auth/**").permitAll()
-          .anyRequest().authenticated()
+          .requestMatchers("/auth/**", "/css/*", "/js/*", "/img/*", "/templates/*","/favicon.ico", "/**").permitAll()
+          .anyRequest().authenticated()          
           )
       .sessionManagement(sessionManagement ->
         sessionManagement
