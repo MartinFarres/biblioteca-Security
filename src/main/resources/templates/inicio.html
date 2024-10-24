@@ -15,7 +15,7 @@
             <div class="collapse navbar-collapse elementosNav" id="navbarNavDropdown">
                 <ul class="navbar-nav ms-auto elementos">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" th:if="${session.usuariosession != null}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" th:if="${usuariosession != null}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Libros
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -29,7 +29,7 @@
 
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" th:if="${session.usuariosession != null}" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" th:if="${usuariosession != null}" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Autores
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -44,7 +44,7 @@
 
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" th:if="${session.usuariosession != null}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" th:if="${usuariosession != null}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Editoriales
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -69,13 +69,13 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link " th:if="${session.usuariosession == null}" href="/registrar" id="navbarDropdown" role="button" aria-expanded="false">
+                        <a class="nav-link " th:if="${usuariosession == null}" href="/registrar" id="navbarDropdown" role="button" aria-expanded="false">
                             Registrate!
                         </a>
 
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " th:if="${session.usuariosession == null}" href="/login" id="navbarDropdown" role="button" aria-expanded="false">
+                        <a class="nav-link " th:if="${usuariosession == null}" href="/login" id="navbarDropdown" role="button" aria-expanded="false">
                             LOGIN!
                         </a>
 
@@ -90,11 +90,11 @@
                     <a class="navbar-brand" >BIBLIOTECA</a>
                 </div>
                 <div class="container contenedorLibros">
-                    <p class="tituloLibros" th:if="${session.usuariosession != null}" th:text=" 'Hola '+ ${session.usuariosession.nombre} + ' Rol ' + ${session.usuariosession.rol}"></p>
+                    <p class="tituloLibros" th:if="${usuariosession != null}" th:text=" 'Hola '+ ${usuarionombre} + ' Rol ' + ${usuariorol}"></p>
                 </div>
                 <div class="container">
-                    <a th:if="${session.usuariosession.imagen != null}" class="d-flex align-items-center">
-                        <img class="logo"  th:src="@{/imagen/perfil/__${session.usuariosession.id}__}" >
+                    <a th:if="${usuarioimagen != null}" class="d-flex align-items-center">
+                        <img class="logo"  th:src="@{/imagen/perfil/__${usuarioid}__}" >
                     </a>
                 </div>
                 <div class="bg-circle-1 bg-circle"></div>

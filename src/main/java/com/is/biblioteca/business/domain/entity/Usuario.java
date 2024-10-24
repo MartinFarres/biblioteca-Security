@@ -5,6 +5,7 @@ package com.is.biblioteca.business.domain.entity;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.mapping.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,9 +35,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "Usuario", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 public class Usuario implements UserDetails{
+    @SuppressWarnings("deprecation")
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Hibernate generará automáticamente el ID.
-    private Long id;
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    private String id;
     private String nombre;
     @Column(nullable = false)
     private String email;
