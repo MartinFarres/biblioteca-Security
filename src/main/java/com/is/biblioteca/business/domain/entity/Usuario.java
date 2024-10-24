@@ -2,43 +2,20 @@
 package com.is.biblioteca.business.domain.entity;
 
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import org.hibernate.mapping.List;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import com.is.biblioteca.business.domain.enumeration.Rol;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "Usuario", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
-public class Usuario implements UserDetails{
+public class Usuario {
+	
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Hibernate generará automáticamente el ID.
-    private Long id;
+    private String id;
     private String nombre;
-    @Column(nullable = false)
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
@@ -47,15 +24,65 @@ public class Usuario implements UserDetails{
     private Imagen imagen;
     private boolean eliminado;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority(rol.name()));
-
+    public Imagen getImagen() {
+        return imagen;
     }
 
-    @Override
-    public String getUsername() {
-       return this.email;
+    public void setImagen(Imagen imagen) {
+        this.imagen = imagen;
+    }
+    
+    
+    public Usuario() {
+    }
+    public String getId() {
+        return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
+	public boolean isEliminado() {
+		return eliminado;
+	}
+
+	public void setEliminado(boolean eliminado) {
+		this.eliminado = eliminado;
+	}
+
+    
+    
 }

@@ -1,6 +1,9 @@
 package com.is.biblioteca.controller.view;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +17,6 @@ import com.is.biblioteca.business.domain.entity.Usuario;
 import com.is.biblioteca.business.logic.error.ErrorServiceException;
 import com.is.biblioteca.business.logic.service.UsuarioService;
 
-import jakarta.servlet.http.HttpSession;
-
 @Controller
 @RequestMapping("/usuario")
 public class UsuarioController {
@@ -23,33 +24,58 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioService usuarioService;
 
+	//////////////////////////////////////////
+	//////////////////////////////////////////
+	////////////// VIEW: LOGIN ///////////////
+	//////////////////////////////////////////
+	//////////////////////////////////////////
+
+	@GetMapping("/login")
+	public String login(@RequestParam(required = false) String error, ModelMap modelo) {
+
+		if (error != null) {
+			modelo.put("error", "Usuario o Contraseña invalidos!");
+		}
+
+		return "login.html";
+	}
+
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@GetMapping("/inicio")
-	public String inicio(){
+	public String inicio(HttpSession session) {
+		Usuario loguedo = (Usuario) session.getAttribute("usuariosession");
+
+		if (loguedo.getRol().toString().equals("ADMIN")){
+			return "redirect:/admin/dashboard";
+		}
+
 		return "inicio.html";
 	}
-	// public String inicio(@RequestParam(value = "email") String email, @RequestParam(value = "password") String clave,
-	// 		HttpSession session, ModelMap modelo) {
 
-	// 	try {
+	@PostMapping("/login")
+	public String inicio(@RequestParam(value = "email") String email, @RequestParam(value = "password") String clave,
+			HttpSession session, ModelMap modelo) {
 
-	// 		Usuario usuario = usuarioService.login(email, clave);
-	// 		session.setAttribute("usuariosession", usuario);
+		try {
 
-	// 		if (usuario.getRol().toString().equals("ADMIN")) {
-	// 			return "redirect:/admin/dashboard";
-	// 		}
+			Usuario usuario = usuarioService.login(email, clave);
+			session.setAttribute("usuariosession", usuario);
 
-	// 		return "inicio.html";
+			if (usuario.getRol().toString().equals("ADMIN")) {
+				return "redirect:/admin/dashboard";
+			}
 
-	// 	} catch (ErrorServiceException ex) {
-	// 		modelo.put("error", ex.getMessage());
-	// 		return "login.html";
-	// 	} catch (Exception e) {
-	// 		e.printStackTrace();
-	// 		modelo.put("error", e.getMessage());
-	// 		return "login.html";
-	// 	}
-	// }
+			return "redirect:/usuario/inicio";
+
+		} catch (ErrorServiceException ex) {
+			modelo.put("error", ex.getMessage());
+			return "login.html";
+		} catch (Exception e) {
+			e.printStackTrace();
+			modelo.put("error", e.getMessage());
+			return "login.html";
+		}
+	}
 
 	@GetMapping("/logout")
 	public String salir(HttpSession session) {
@@ -57,11 +83,45 @@ public class UsuarioController {
 		return "index.html";
 	}
 
+	//////////////////////////////////////////
+	//////////////////////////////////////////
+	//////////// VIEW: CREAR USUARIO /////////
+	//////////////////////////////////////////
+	//////////////////////////////////////////
 
 	@GetMapping("/registrar")
 	public String irEditAlta() {
 		return "registro.html";
 	}
+
+	@PostMapping("/registro")
+	public String aceptarEditAlta(@RequestParam String nombre, @RequestParam String email,
+			@RequestParam String password, @RequestParam String password2, ModelMap modelo, MultipartFile archivo) {
+
+		try {
+			usuarioService.crearUsuario(nombre, email, password, password2, archivo);
+
+			modelo.put("exito", "Usuario registrado correctamente!");
+
+			return "index.html";
+
+
+		} catch (ErrorServiceException ex) {
+
+			modelo.put("error", ex.getMessage());
+			modelo.put("nombre", nombre);
+			modelo.put("email", email);
+
+			return "registro.html";
+		}
+
+	}
+
+	//////////////////////////////////////////
+	//////////////////////////////////////////
+	///////// VIEW: MODIFICAR USUARIO //////// 
+	//////////////////////////////////////////
+	//////////////////////////////////////////
 
 	@GetMapping("/perfil")
 	public String irEditModificar(ModelMap modelo, HttpSession session) {

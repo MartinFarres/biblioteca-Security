@@ -7,6 +7,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -19,10 +26,11 @@ import com.is.biblioteca.business.domain.enumeration.Rol;
 import com.is.biblioteca.business.logic.error.ErrorServiceException;
 import com.is.biblioteca.business.persistence.repository.UsuarioRepository;
 
-import jakarta.persistence.NoResultException;
+import javax.persistence.NoResultException;
+import javax.servlet.http.HttpSession;
 
 @Service
-public class UsuarioService {
+public class UsuarioService implements UserDetailsService {
 
 	@Autowired
     private UsuarioRepository repository;
@@ -71,16 +79,17 @@ public class UsuarioService {
         validar(nombre, email, clave, confirmacion);
         
         Usuario usuario = new Usuario();
+        usuario.setId(UUID.randomUUID().toString());
         usuario.setNombre(nombre);
         usuario.setEmail(email);
         usuario.setRol(Rol.USER);
-        usuario.setPassword(clave);
+        usuario.setPassword(new BCryptPasswordEncoder().encode(clave));
         usuario.setEliminado(false);
- 
-        if (archivo != null) {        
-         Imagen imagen = imagenService.crearImagen(archivo);
-         usuario.setImagen(imagen);
-        } 
+        
+        // if (archivo != null) {        
+        //     Imagen imagen = imagenService.crearImagen(archivo);
+        //     usuario.setImagen(imagen);
+        // } 
         
         return repository.save(usuario);
         
@@ -271,6 +280,30 @@ public class UsuarioService {
          	e.printStackTrace();
          	throw new ErrorServiceException("Error de Sistemas");
         } 
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Usuario usuario = repository.buscarUsuarioPorEmail(email);
+
+        if (usuario != null){
+            
+            List<GrantedAuthority> permisos = new ArrayList<>();
+
+            GrantedAuthority p = new SimpleGrantedAuthority("ROLE_" + usuario.getRol().toString());
+
+            permisos.add(p);
+
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+
+            HttpSession session = attributes.getRequest().getSession(true);
+
+            session.setAttribute("usuariosession", usuario);
+
+            return new User(usuario.getEmail(), usuario.getPassword(), permisos);
+        }else{
+            return null;
+        }
     }
 
 }

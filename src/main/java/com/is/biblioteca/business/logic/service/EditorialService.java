@@ -13,7 +13,7 @@ import com.is.biblioteca.business.domain.entity.Editorial;
 import com.is.biblioteca.business.logic.error.ErrorServiceException;
 import com.is.biblioteca.business.persistence.repository.EditorialRepository;
 
-import jakarta.persistence.NoResultException;
+import javax.persistence.NoResultException;
 
 
 @Service

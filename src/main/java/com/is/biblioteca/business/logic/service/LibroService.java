@@ -15,8 +15,8 @@ import com.is.biblioteca.business.domain.entity.Libro;
 import com.is.biblioteca.business.logic.error.ErrorServiceException;
 import com.is.biblioteca.business.persistence.repository.LibroRepository;
 
-import jakarta.persistence.NoResultException;
-import jakarta.transaction.Transactional;
+import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 
 @Service
 public class LibroService {
